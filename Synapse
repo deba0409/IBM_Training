@@ -1,0 +1,45 @@
+
+-- Distribution ROUND_ROBIN, HASH, REPLICATE
+-- dimension table/master data
+-- REPLICATE - Table is replicated in all compute nodes
+CREATE TABLE category (
+    id INT NOT NULL,
+    category_name VARCHAR(100)
+) WITH (
+    DISTRIBUTION = REPLICATE
+)
+
+
+INSERT INTO category VALUES (1, 'mobile');
+INSERT INTO category VALUES (2, 'tablet');
+
+SELECT * FROM category;
+
+
+-- fact table, transaction table
+-- Distribution  Hash
+-- Distribute the data based on hash code
+-- countty % number of distribution 
+-- the data shal be assigned to compute node based on hash output
+CREATE TABLE sales (id INT NOT NULL,
+    amount FLOAT, 
+    country VARCHAR(100),
+    category INT
+    ) WITH (
+        DISTRIBUTION = Hash(country)
+    )
+
+EXPLAIN <SQL STATEMENT> - WILL SHOW THE EXECUTION PLAN AND THE COST FOR THE QUERY
+
+-- Distribution Round Robin
+-- The data is distributed evenly without any logic across cluster
+-- intermitten table.. 
+-- staging tables
+-- mostly deal these data in data lake itself.
+CREATE TABLE page_clicks (
+    page_id INT NOT NULL,
+    user_id INT NOT NULL,
+    click_time DATETIME
+) WITH (
+    DISTRIBUTION= ROUND_ROBIN
+)
